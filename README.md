@@ -1,205 +1,248 @@
+<div align="center">
+
 # RemoteControl
+
+**Turn your iPhone into a wireless trackpad, keyboard & app launcher for your Mac.**
 
 用 iPhone 远程控制你的 Mac —— 触控板、键盘、App 启动器，一切尽在掌中。
 
-RemoteControl 是一组 iOS + macOS 原生应用，通过局域网让你的 iPhone / iPad 变成 Mac 的无线触控板、键盘和应用启动器。适合投屏演示、沙发上操控 Mac、或任何不想走到电脑前的场景。
+[![Swift](https://img.shields.io/badge/Swift-5.9-F05138?style=flat&logo=swift&logoColor=white)](https://swift.org)
+[![Platform iOS](https://img.shields.io/badge/iOS-16.0+-007AFF?style=flat&logo=apple&logoColor=white)](https://developer.apple.com/ios/)
+[![Platform macOS](https://img.shields.io/badge/macOS-13.0+-000000?style=flat&logo=apple&logoColor=white)](https://developer.apple.com/macos/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/HuangRunHua/RemoteControl?style=flat&logo=github)](https://github.com/HuangRunHua/RemoteControl/stargazers)
 
-## 截图预览
+<br>
 
-| 竖屏 - 应用启动器 | 竖屏 - 虚拟触控板 |
-|:---:|:---:|
-| ![竖屏应用](pic/image3.png) | ![竖屏触控板](pic/image4.png) |
+> No third-party app to buy. No dongles. Just your iPhone and your Mac on the same Wi-Fi.
 
-| 横屏 - 应用启动器 | 横屏 - 触控板 + 快捷栏 |
-|:---:|:---:|
-| ![横屏应用](pic/image2.png) | ![横屏触控板](pic/image.png) |
-
----
-
-## 功能亮点
-
-### 应用启动器
-
-- 自动读取 Mac 上已安装的应用，支持搜索和添加
-- 2×4 / 4×2 自适应网格布局，大图标一目了然
-- 长按进入编辑模式（iOS 风格抖动 + 删除），支持添加重复快捷方式
-- 分页浏览，自动持久化你的选择
-
-### 虚拟触控板
-
-- **单指滑动** → 移动鼠标（非线性加速度，还原真实触控板手感）
-- **单指点击** → 左键
-- **双指点击** → 右键
-- **双击** → 双击
-- **双指滑动** → 滚动（带惯性和动量物理效果）
-- 触觉反馈（Haptic Feedback），操作有手感
-
-### 键盘输入
-
-- 支持完整的中文输入法（IME），拼音候选词正常工作
-- 输入内容保留在输入框中，方便查看和修改
-- Return 键直接触发 Mac 回车
-- Mac 文本框获得焦点时，键盘按钮显示绿色指示灯
-
-### 快捷键 & 媒体控制
-
-| 快捷键 | 功能 |
-|--------|------|
-| ⌘C | 复制 |
-| ⌘V | 粘贴 |
-| ⌘Tab | 切换应用 |
-| ⌘W | 关闭标签页 |
-| ⌘Z | 撤销 |
-| ⌘A | 全选 |
-
-音量调节（+/-）和播放/暂停，一键控制。
-
-### UI 设计
-
-- Liquid Glass 液态玻璃风格浮动 Tab 栏和快捷按钮
-- 横屏 / 竖屏自适应布局
-  - 竖屏：底部居中 Tab，快捷栏浮动
-  - 横屏：Tab 右上角，快捷栏右下角可折叠
-- 深色主题，沉浸式体验
+</div>
 
 ---
 
-## 系统要求
+## Screenshots
 
-| 平台 | 最低版本 |
-|------|---------|
+| Portrait - App Launcher | Portrait - Trackpad |
+|:---:|:---:|
+| ![Portrait Apps](pic/image3.png) | ![Portrait Trackpad](pic/image4.png) |
+
+| Landscape - App Launcher | Landscape - Trackpad + Shortcuts |
+|:---:|:---:|
+| ![Landscape Apps](pic/image2.png) | ![Landscape Trackpad](pic/image.png) |
+
+---
+
+## Highlights
+
+| Feature | Description |
+|---------|-------------|
+| **App Launcher** | Browse and launch any Mac app from a beautiful adaptive grid (2x4 portrait / 4x2 landscape). Long-press to enter jiggle mode and rearrange — just like your Home Screen. |
+| **Virtual Trackpad** | Non-linear acceleration, momentum scrolling, haptic feedback. Feels like a real Apple trackpad in your pocket. |
+| **Full Keyboard + IME** | Type in English, Chinese, or any language. Full Input Method Editor support with candidate selection. Return key maps to Mac Return. |
+| **Shortcuts & Media** | One-tap access to Cmd+C, Cmd+V, Cmd+Tab, Cmd+W, Cmd+Z, Cmd+A, plus volume & playback controls. |
+| **Liquid Glass UI** | Floating tab bar and collapsible shortcut pills with frosted-glass material — adapts seamlessly between portrait & landscape. |
+| **Zero Config** | Bonjour auto-discovery. Open both apps, done. No IP address, no pairing code. |
+
+---
+
+## How It Works
+
+```
+┌──────────────┐        Bonjour Discovery        ┌──────────────┐
+│   iPhone     │  ──────────────────────────────► │     Mac      │
+│              │                                  │              │
+│  NWBrowser   │       TCP Connection (JSON)      │  NWListener  │
+│  (Client)    │  ◄──────────────────────────────►│  (Server)    │
+│              │                                  │              │
+│  Send Cmds   │   Mouse/Keyboard/App/Shortcuts   │  CGEvent     │
+│  (RemoteCommand)                                │  Simulate    │
+└──────────────┘                                  └──────────────┘
+```
+
+- **Discovery** — Mac registers `_macremote._tcp` via Bonjour; iPhone finds it automatically
+- **Protocol** — TCP with 4-byte length prefix + JSON payload
+- **Input** — Mac uses `CGEvent` API to simulate mouse, keyboard, and media events
+- **Focus Detection** — Mac monitors text field focus via Accessibility API and notifies iPhone to show the keyboard indicator
+
+---
+
+## Requirements
+
+| Platform | Minimum Version |
+|----------|----------------|
 | iOS / iPadOS | 16.0+ |
 | macOS | 13.0+ (Ventura) |
 
-iOS 和 Mac 需要在 **同一局域网** 下。
+Both devices must be on the **same local network**.
 
 ---
 
-## 快速开始
+## Getting Started
 
-### 1. 构建 & 运行
+### 1. Clone & Open
 
 ```bash
-# 克隆项目
-git clone https://github.com/your-username/RemoteControl.git
+git clone https://github.com/HuangRunHua/RemoteControl.git
 cd RemoteControl
-
-# 使用 Xcode 打开
 open RemoteControl.xcodeproj
 ```
 
-项目包含两个 Target：
+The project contains two targets:
 
-- **RemoteControl** — iOS 应用，部署到 iPhone / iPad
-- **RemoteControlMac** — macOS 应用，运行在你的 Mac 上
+| Target | Platform | Description |
+|--------|----------|-------------|
+| **RemoteControl** | iOS | Deploy to your iPhone / iPad |
+| **RemoteControlMac** | macOS | Run on your Mac |
 
-### 2. Mac 端设置
+### 2. Mac Setup
 
-首次运行 Mac 应用时，需要授予 **辅助功能权限**：
+On first launch, grant **Accessibility** permission:
 
-> 系统设置 → 隐私与安全性 → 辅助功能 → 勾选 RemoteControlMac
+> System Settings → Privacy & Security → Accessibility → Enable **RemoteControlMac**
 
-这是模拟鼠标/键盘输入所必需的。Mac 应用以菜单栏图标形式运行，不会出现在 Dock 中。
+The Mac app runs as a **menu bar icon** (no Dock icon).
 
-### 3. iOS 端连接
+### 3. Connect
 
-打开 iOS 应用，它会自动搜索局域网内的 Mac。首次使用时系统会请求 **本地网络权限**，请允许。
-
-连接成功后，你会看到 Mac 名称显示在顶部，即可开始使用。
-
----
-
-## 工作原理
-
-```
-┌──────────────┐          Bonjour 发现          ┌──────────────┐
-│   iPhone     │  ──────────────────────────►  │     Mac      │
-│              │                               │              │
-│  NWBrowser   │       TCP 连接 (JSON)         │  NWListener  │
-│  (客户端)    │  ◄────────────────────────►  │  (服务端)    │
-│              │                               │              │
-│  发送命令    │   鼠标/键盘/App/快捷键/媒体    │  CGEvent     │
-│  (RemoteCommand)                             │  模拟输入    │
-└──────────────┘                               └──────────────┘
-```
-
-- **发现**：Mac 注册 Bonjour 服务 `_macremote._tcp`，iOS 自动发现
-- **通信**：TCP 连接，消息格式为 4 字节长度头 + JSON 载荷
-- **输入模拟**：Mac 端使用 `CGEvent` API 模拟鼠标移动、点击、键盘输入
-- **焦点检测**：Mac 端通过 Accessibility API 检测文本框焦点状态，通知 iOS 显示键盘提示
+Open the iOS app — it auto-discovers your Mac. Allow **Local Network** access when prompted. Once connected, your Mac's name appears at the top. You're ready to go.
 
 ---
 
-## 项目结构
+## Features in Detail
+
+### App Launcher
+
+- Auto-fetches installed Mac apps with icons
+- 2x4 (portrait) / 4x2 (landscape) adaptive grid with pagination
+- Long-press to enter jiggle mode (iOS-style wobble + delete badge)
+- Persistent storage — your shortcuts survive app restarts
+- Add duplicates for different workflows
+
+### Virtual Trackpad
+
+- **Single-finger drag** → Move cursor (non-linear acceleration curve)
+- **Single-finger tap** → Left click
+- **Two-finger tap** → Right click
+- **Double tap** → Double click
+- **Two-finger scroll** → Scroll with momentum physics
+- **Haptic feedback** on every interaction
+
+### Keyboard & IME
+
+- Full Chinese input (Pinyin) with candidate bar
+- Input text stays visible in the text field
+- Return key triggers Mac's Return
+- Green indicator when Mac text field is focused
+- Keyboard never blocks the tab bar
+
+### Shortcuts & Media
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd + C` | Copy |
+| `Cmd + V` | Paste |
+| `Cmd + Tab` | Switch App |
+| `Cmd + W` | Close Tab |
+| `Cmd + Z` | Undo |
+| `Cmd + A` | Select All |
+| `Vol +/-` | Volume Control |
+| `Play/Pause` | Media Playback |
+
+---
+
+## Project Structure
 
 ```
 RemoteControl/
-├── RemoteControl/                  # iOS 应用
-│   ├── ContentView.swift           # 主布局、Tab 栏、快捷栏
+├── RemoteControl/                  # iOS App
+│   ├── ContentView.swift           # Main layout, tab bar, shortcuts overlay
 │   ├── Services/
-│   │   └── ConnectionManager.swift # Bonjour 发现 & TCP 连接
+│   │   └── ConnectionManager.swift # Bonjour discovery & TCP connection
 │   ├── Shared/
-│   │   └── RemoteProtocol.swift    # 通信协议定义
+│   │   └── RemoteProtocol.swift    # Communication protocol definitions
 │   ├── ViewModels/
-│   │   └── RemoteViewModel.swift   # 业务逻辑 & 持久化
+│   │   └── RemoteViewModel.swift   # Business logic & persistence
 │   └── Views/
-│       ├── AppGridView.swift       # 应用网格（分页、编辑）
-│       ├── AppIconView.swift       # 应用图标（液态玻璃、抖动）
-│       ├── AppPickerView.swift     # 添加应用选择器
-│       ├── TrackpadView.swift      # 虚拟触控板 & 键盘输入
-│       └── ShortcutBarView.swift   # 快捷栏
+│       ├── AppGridView.swift       # App grid (pagination, edit mode)
+│       ├── AppIconView.swift       # App icon (glass effect, jiggle)
+│       ├── AppPickerView.swift     # Add-app picker
+│       ├── TrackpadView.swift      # Virtual trackpad & keyboard input
+│       └── ShortcutBarView.swift   # Shortcut bar
 │
-├── RemoteControlMac/               # macOS 应用
+├── RemoteControlMac/               # macOS App
 │   ├── Services/
-│   │   ├── CommandServer.swift     # TCP 服务端 & 命令处理
-│   │   ├── InputSimulator.swift    # CGEvent 输入模拟
-│   │   ├── AccessibilityMonitor.swift # 焦点检测
-│   │   └── AppManager.swift        # 应用扫描 & 图标获取
+│   │   ├── CommandServer.swift     # TCP server & command dispatch
+│   │   ├── InputSimulator.swift    # CGEvent input simulation
+│   │   ├── AccessibilityMonitor.swift # Text field focus detection
+│   │   └── AppManager.swift        # App scanning & icon extraction
 │   └── Shared/
-│       └── RemoteProtocol.swift    # 通信协议（Mac 侧）
+│       └── RemoteProtocol.swift    # Communication protocol (Mac side)
 │
 └── RemoteControl.xcodeproj
 ```
 
 ---
 
-## 技术栈
+## Tech Stack
 
-- **SwiftUI** — iOS 界面
-- **Network.framework** — Bonjour 服务发现 + TCP 通信
-- **CGEvent** — macOS 鼠标/键盘输入模拟
-- **Accessibility API** — macOS 文本框焦点检测
-- **UIKit** — 手势识别器（`UIPanGestureRecognizer`、`UITapGestureRecognizer`）
-- **Core Haptics** — 触觉反馈
-
----
-
-## 已知限制
-
-- 仅支持单台 Mac 连接（自动连接第一个发现的 Mac）
-- Mac 端同时只接受一个控制设备
-- 通信未加密（仅限信任的局域网使用）
-- 无认证机制，同一网络下即可连接
+| Technology | Usage |
+|-----------|-------|
+| **SwiftUI** | iOS interface & layout |
+| **Network.framework** | Bonjour discovery + TCP communication |
+| **CGEvent** | macOS mouse & keyboard simulation |
+| **Accessibility API** | macOS text field focus detection |
+| **UIKit** | Gesture recognizers (pan, tap, long-press) |
+| **Core Haptics** | Tactile feedback |
 
 ---
 
-## 路线图
+## Known Limitations
 
-- [ ] 多 Mac 设备选择
-- [ ] TLS 加密通信
-- [ ] 连接密码 / PIN 认证
-- [ ] 屏幕镜像预览
-- [ ] 自定义快捷键
-- [ ] Apple Watch 快捷控制
+- Single Mac connection (auto-connects to the first discovered Mac)
+- One controller device at a time
+- Unencrypted communication (use on trusted networks only)
+- No authentication — any device on the same network can connect
 
 ---
 
-## 许可证
+## Roadmap
 
-[MIT License](LICENSE)
+- [ ] Multi-Mac device selection
+- [ ] TLS encrypted communication
+- [ ] PIN / password authentication
+- [ ] Screen mirroring preview
+- [ ] Custom shortcut configuration
+- [ ] Apple Watch quick controls
+- [ ] Widget for quick launch
 
 ---
 
-## 致谢
+## Contributing
 
-灵感来自 [Choclift](https://choclift.com/)，致力于打造一个开源、免费的 Mac 远程控制方案。
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## License
+
+[MIT License](LICENSE) — use it, modify it, ship it.
+
+---
+
+## Acknowledgments
+
+Inspired by [Choclift](https://choclift.com/). Built as a free, open-source alternative for Mac remote control.
+
+---
+
+<div align="center">
+
+**If you find this useful, consider giving it a star!**
+
+</div>
