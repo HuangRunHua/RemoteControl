@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="pic/appicon.png" width="128" alt="AirTap Icon">
+
 # AirTap
 
 **Your iPhone is now a wireless trackpad, keyboard & app launcher for your Mac.**
@@ -35,16 +37,20 @@
 ## Demo
 
 ### Launch App
-<video src="pic/launch_app.mp4" controls width="600"></video>
+
+![Launch App](pic/launch_app.mp4)
 
 ### Trackpad
-<video src="pic/trackpad.mp4" controls width="600"></video>
+
+![Trackpad](pic/trackpad.mp4)
 
 ### Delete App
-<video src="pic/delete_app.mp4" controls width="600"></video>
+
+![Delete App](pic/delete_app.mp4)
 
 ### Voice Control
-<video src="pic/voice_control.mp4" controls width="600"></video>
+
+![Voice Control](pic/voice_control.mp4)
 
 ---
 
