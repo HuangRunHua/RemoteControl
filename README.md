@@ -36,21 +36,15 @@
 
 ## Demo
 
-### Launch App
+> Click the thumbnails below to watch the demo videos on X (Twitter).
 
-[Launch App](pic/launch_app.mp4)
+| Launch App | Trackpad |
+|:---:|:---:|
+| [![Launch App](pic/launch_app_thumb.jpg)](https://x.com/joker_hook/status/2034843981155373074) | [![Trackpad](pic/trackpad_thumb.jpg)](https://x.com/joker_hook/status/2034844656933249086) |
 
-### Trackpad
-
-[Trackpad](pic/trackpad.mp4)
-
-### Delete App
-
-[Delete App](pic/delete_app.mp4)
-
-### Voice Control
-
-[Voice Control](pic/voice_control.mp4)
+| Delete App | Voice Control |
+|:---:|:---:|
+| [![Delete App](pic/delete_app_thumb.jpg)](https://x.com/joker_hook/status/2034844993253515571) | [![Voice Control](pic/voice_control_thumb.jpg)](https://x.com/joker_hook/status/2034845194655609198) |
 
 ---
 
