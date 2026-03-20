@@ -38,19 +38,19 @@
 
 ### Launch App
 
-![Launch App](pic/launch_app.mp4)
+[Launch App](pic/launch_app.mp4)
 
 ### Trackpad
 
-![Trackpad](pic/trackpad.mp4)
+[Trackpad](pic/trackpad.mp4)
 
 ### Delete App
 
-![Delete App](pic/delete_app.mp4)
+[Delete App](pic/delete_app.mp4)
 
 ### Voice Control
 
-![Voice Control](pic/voice_control.mp4)
+[Voice Control](pic/voice_control.mp4)
 
 ---
 
