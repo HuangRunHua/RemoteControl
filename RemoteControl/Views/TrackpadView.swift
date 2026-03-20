@@ -31,7 +31,13 @@ struct TrackpadView: View {
                         onTap: viewModel.sendLeftClick,
                         onDoubleTap: viewModel.sendDoubleClick,
                         onTwoFingerTap: viewModel.sendRightClick,
-                        onScroll: viewModel.sendScroll
+                        onScroll: viewModel.sendScroll,
+                        onZoomIn: viewModel.sendZoomIn,
+                        onZoomOut: viewModel.sendZoomOut,
+                        onSmartZoom: viewModel.sendSmartZoom,
+                        onSwitchSpaceLeft: viewModel.sendSwitchSpaceLeft,
+                        onSwitchSpaceRight: viewModel.sendSwitchSpaceRight,
+                        onMissionControl: viewModel.sendMissionControl
                     )
 
                     if showShortcutBar {
@@ -60,6 +66,12 @@ struct TrackpadSurface: UIViewRepresentable {
     let onDoubleTap: () -> Void
     let onTwoFingerTap: () -> Void
     let onScroll: (Double, Double) -> Void
+    let onZoomIn: () -> Void
+    let onZoomOut: () -> Void
+    let onSmartZoom: () -> Void
+    let onSwitchSpaceLeft: () -> Void
+    let onSwitchSpaceRight: () -> Void
+    let onMissionControl: () -> Void
 
     func makeUIView(context: Context) -> TrackpadUIView {
         let view = TrackpadUIView()
@@ -68,6 +80,12 @@ struct TrackpadSurface: UIViewRepresentable {
         view.onDoubleTap = onDoubleTap
         view.onTwoFingerTap = onTwoFingerTap
         view.onScroll = onScroll
+        view.onZoomIn = onZoomIn
+        view.onZoomOut = onZoomOut
+        view.onSmartZoom = onSmartZoom
+        view.onSwitchSpaceLeft = onSwitchSpaceLeft
+        view.onSwitchSpaceRight = onSwitchSpaceRight
+        view.onMissionControl = onMissionControl
         return view
     }
 
@@ -80,6 +98,15 @@ final class TrackpadUIView: UIView {
     var onDoubleTap: (() -> Void)?
     var onTwoFingerTap: (() -> Void)?
     var onScroll: ((Double, Double) -> Void)?
+    var onZoomIn: (() -> Void)?
+    var onZoomOut: (() -> Void)?
+    var onSmartZoom: (() -> Void)?
+    var onSwitchSpaceLeft: (() -> Void)?
+    var onSwitchSpaceRight: (() -> Void)?
+    var onMissionControl: (() -> Void)?
+
+    private var pinchAccumulator: CGFloat = 0
+    private let pinchStepThreshold: CGFloat = 0.15
 
     private let lightImpact = UIImpactFeedbackGenerator(style: .light)
     private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
@@ -117,8 +144,13 @@ final class TrackpadUIView: UIView {
         doubleTap.numberOfTapsRequired = 2
         tap.require(toFail: doubleTap)
 
+        let twoFingerDoubleTap = UITapGestureRecognizer(target: self, action: #selector(handleSmartZoom))
+        twoFingerDoubleTap.numberOfTouchesRequired = 2
+        twoFingerDoubleTap.numberOfTapsRequired = 2
+
         let twoFingerTap = UITapGestureRecognizer(target: self, action: #selector(handleTwoFingerTap))
         twoFingerTap.numberOfTouchesRequired = 2
+        twoFingerTap.require(toFail: twoFingerDoubleTap)
 
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         pan.maximumNumberOfTouches = 1
@@ -127,7 +159,9 @@ final class TrackpadUIView: UIView {
         twoFingerPan.minimumNumberOfTouches = 2
         twoFingerPan.maximumNumberOfTouches = 2
 
-        [tap, doubleTap, twoFingerTap, pan, twoFingerPan].forEach(addGestureRecognizer)
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
+
+        [tap, doubleTap, twoFingerDoubleTap, twoFingerTap, pan, twoFingerPan, pinch].forEach(addGestureRecognizer)
     }
 
     private func accelerationFactor(for velocity: CGPoint) -> CGFloat {
@@ -141,6 +175,31 @@ final class TrackpadUIView: UIView {
     @objc private func handleTap(_ g: UITapGestureRecognizer)           { lightImpact.impactOccurred(); onTap?() }
     @objc private func handleDoubleTap(_ g: UITapGestureRecognizer)     { mediumImpact.impactOccurred(); onDoubleTap?() }
     @objc private func handleTwoFingerTap(_ g: UITapGestureRecognizer)  { heavyImpact.impactOccurred(); onTwoFingerTap?() }
+
+    @objc private func handleSmartZoom(_ g: UITapGestureRecognizer)   { mediumImpact.impactOccurred(); onSmartZoom?() }
+
+    @objc private func handlePinch(_ g: UIPinchGestureRecognizer) {
+        switch g.state {
+        case .began:
+            pinchAccumulator = 0
+        case .changed:
+            pinchAccumulator += g.scale - 1.0
+            g.scale = 1.0
+            while pinchAccumulator > pinchStepThreshold {
+                pinchAccumulator -= pinchStepThreshold
+                selectionFeedback.selectionChanged()
+                onZoomIn?()
+            }
+            while pinchAccumulator < -pinchStepThreshold {
+                pinchAccumulator += pinchStepThreshold
+                selectionFeedback.selectionChanged()
+                onZoomOut?()
+            }
+        case .ended, .cancelled:
+            pinchAccumulator = 0
+        default: break
+        }
+    }
 
     // MARK: - Pan gestures
 

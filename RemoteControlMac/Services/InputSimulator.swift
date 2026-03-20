@@ -82,6 +82,32 @@ final class InputSimulator {
         }
     }
 
+    // MARK: - Gestures
+
+    func zoomIn() {
+        keyPress(keyCode: 24, modifiers: CGEventFlags.maskCommand.rawValue)
+    }
+
+    func zoomOut() {
+        keyPress(keyCode: 27, modifiers: CGEventFlags.maskCommand.rawValue)
+    }
+
+    func smartZoom() {
+        keyPress(keyCode: 29, modifiers: CGEventFlags.maskCommand.rawValue)
+    }
+
+    func switchSpaceLeft() {
+        keyPress(keyCode: 123, modifiers: CGEventFlags.maskControl.rawValue)
+    }
+
+    func switchSpaceRight() {
+        keyPress(keyCode: 124, modifiers: CGEventFlags.maskControl.rawValue)
+    }
+
+    func missionControl() {
+        keyPress(keyCode: 126, modifiers: CGEventFlags.maskControl.rawValue)
+    }
+
     // MARK: - Media keys
 
     func volumeUp()   { postMediaKey(0) }

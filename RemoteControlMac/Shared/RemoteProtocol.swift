@@ -7,7 +7,7 @@ enum BonjourConfig {
 
 // MARK: - iOS → Mac
 
-enum RemoteCommand: Codable {
+enum RemoteCommand: Codable, Sendable {
     case requestAppList
     case launchApp(bundleID: String)
     case mouseMove(deltaX: Double, deltaY: Double)
@@ -22,21 +22,27 @@ enum RemoteCommand: Codable {
     case volumeUp
     case volumeDown
     case playPause
+    case zoomIn
+    case zoomOut
+    case smartZoom
+    case switchSpaceLeft
+    case switchSpaceRight
+    case missionControl
 }
 
-enum ShortcutCommand: String, Codable, CaseIterable {
+enum ShortcutCommand: String, Codable, CaseIterable, Sendable {
     case copy, paste, switchApp, closeTab, undo, selectAll
 }
 
 // MARK: - Mac → iOS
 
-enum RemoteResponse: Codable {
+enum RemoteResponse: Codable, Sendable {
     case appList([AppInfo])
     case textFieldFocused(Bool)
     case connectionAck(macName: String)
 }
 
-struct AppInfo: Codable, Identifiable, Hashable {
+struct AppInfo: Codable, Identifiable, Hashable, Sendable {
     var id: String { bundleID }
     let bundleID: String
     let name: String

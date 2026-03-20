@@ -26,11 +26,13 @@ class CommandServer: ObservableObject {
             )
 
             listener?.newConnectionHandler = { [weak self] conn in
-                Task { @MainActor in self?.accept(conn) }
+                Task { @MainActor [weak self] in
+                    self?.accept(conn)
+                }
             }
 
-            listener?.stateUpdateHandler = { [weak self] state in
-                Task { @MainActor in
+            listener?.stateUpdateHandler = { state in
+                Task { @MainActor [weak self] in
                     self?.isRunning = (state == .ready)
                 }
             }
@@ -38,7 +40,7 @@ class CommandServer: ObservableObject {
             listener?.start(queue: queue)
 
             accessibilityMonitor.onFocusChanged = { [weak self] focused in
-                Task { @MainActor in
+                Task { @MainActor [weak self] in
                     self?.sendResponse(.textFieldFocused(focused))
                 }
             }
@@ -63,7 +65,7 @@ class CommandServer: ObservableObject {
         connection = newConnection
 
         connection?.stateUpdateHandler = { [weak self] state in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 guard let self else { return }
                 switch state {
                 case .ready:
@@ -89,19 +91,26 @@ class CommandServer: ObservableObject {
     }
 
     private func receiveNext() {
-        connection?.receive(minimumIncompleteLength: 4, maximumLength: 4) { [weak self] header, _, isComplete, _ in
-            guard let self, let header, header.count == 4 else {
-                if let self, !(isComplete) { self.receiveNext() }
+        guard let conn = connection else { return }
+        conn.receive(minimumIncompleteLength: 4, maximumLength: 4) { [weak self] header, _, isComplete, _ in
+            guard let header, header.count == 4 else {
+                if !isComplete {
+                    Task { @MainActor [weak self] in self?.receiveNext() }
+                }
                 return
             }
 
             let length = header.withUnsafeBytes { $0.load(as: UInt32.self).bigEndian }
 
-            self.connection?.receive(minimumIncompleteLength: Int(length), maximumLength: Int(length)) { [weak self] data, _, isComplete, _ in
-                if let data, let cmd = try? NetworkFraming.decode(RemoteCommand.self, from: data) {
-                    Task { @MainActor in self?.execute(cmd) }
+            conn.receive(minimumIncompleteLength: Int(length), maximumLength: Int(length)) { [weak self] data, _, isComplete, _ in
+                Task { @MainActor [weak self] in
+                    if let data, let cmd = try? NetworkFraming.decode(RemoteCommand.self, from: data) {
+                        self?.execute(cmd)
+                    }
+                    if !isComplete {
+                        self?.receiveNext()
+                    }
                 }
-                if !(isComplete) { self?.receiveNext() }
             }
         }
     }
@@ -142,6 +151,13 @@ class CommandServer: ObservableObject {
         case .volumeUp:   inputSimulator.volumeUp()
         case .volumeDown: inputSimulator.volumeDown()
         case .playPause:  inputSimulator.playPause()
+
+        case .zoomIn:           inputSimulator.zoomIn()
+        case .zoomOut:          inputSimulator.zoomOut()
+        case .smartZoom:        inputSimulator.smartZoom()
+        case .switchSpaceLeft:  inputSimulator.switchSpaceLeft()
+        case .switchSpaceRight: inputSimulator.switchSpaceRight()
+        case .missionControl:   inputSimulator.missionControl()
         }
     }
 }

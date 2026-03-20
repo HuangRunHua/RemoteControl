@@ -6,9 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BD6998E12F6CF014005E56A9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BD6998E02F6CF014005E56A9 /* AppIcon.icon */; };
+		BD6998E22F6CF014005E56A9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BD6998E02F6CF014005E56A9 /* AppIcon.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		BD4D0DA92F6BC28300AB3299 /* RemoteControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemoteControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4D0E0F2F6BCF6800AB3299 /* RemoteControlMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RemoteControlMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BD6998E02F6CF014005E56A9 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -45,6 +51,7 @@
 		BD4D0DA02F6BC28300AB3299 = {
 			isa = PBXGroup;
 			children = (
+				BD6998E02F6CF014005E56A9 /* AppIcon.icon */,
 				BD4D0DAB2F6BC28300AB3299 /* RemoteControl */,
 				BD4D0E102F6BCF6800AB3299 /* RemoteControlMac */,
 				BD4D0DAA2F6BC28300AB3299 /* Products */,
@@ -150,6 +157,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD6998E12F6CF014005E56A9 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD6998E22F6CF014005E56A9 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +392,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -417,6 +428,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

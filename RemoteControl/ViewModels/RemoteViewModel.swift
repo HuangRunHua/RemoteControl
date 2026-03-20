@@ -67,6 +67,13 @@ class RemoteViewModel: ObservableObject {
     func sendVolumeDown()  { connection.send(.volumeDown) }
     func sendPlayPause()   { connection.send(.playPause) }
 
+    func sendZoomIn()           { connection.send(.zoomIn) }
+    func sendZoomOut()          { connection.send(.zoomOut) }
+    func sendSmartZoom()        { connection.send(.smartZoom) }
+    func sendSwitchSpaceLeft()  { connection.send(.switchSpaceLeft) }
+    func sendSwitchSpaceRight() { connection.send(.switchSpaceRight) }
+    func sendMissionControl()   { connection.send(.missionControl) }
+
     // MARK: - Persistence
 
     private func persistSelection() {

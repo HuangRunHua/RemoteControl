@@ -22,6 +22,12 @@ enum RemoteCommand: Codable {
     case volumeUp
     case volumeDown
     case playPause
+    case zoomIn
+    case zoomOut
+    case smartZoom
+    case switchSpaceLeft
+    case switchSpaceRight
+    case missionControl
 }
 
 enum ShortcutCommand: String, Codable, CaseIterable {

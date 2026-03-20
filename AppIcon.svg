@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141235"/>
+      <stop offset="100%" stop-color="#2a1a5e"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- Cursor + Signal group, centered -->
+  <g transform="translate(310, 200)" filter="url(#glow)">
+    <!-- Mac-style cursor arrow -->
+    <path d="M 40 0 L 0 340 L 95 265 L 140 380 L 190 360 L 145 245 L 260 210 Z" fill="white"/>
+
+    <!-- Wi-Fi signal arcs emanating from cursor tip toward upper-right -->
+    <g fill="none" stroke="white" stroke-linecap="round">
+      <path d="M 245 175 A 70 70 0 0 0 300 75" stroke-width="22"/>
+      <path d="M 280 195 A 130 130 0 0 0 365 45" stroke-width="22"/>
+      <path d="M 310 220 A 190 190 0 0 0 430 20" stroke-width="22"/>
+    </g>
+  </g>
+</svg>

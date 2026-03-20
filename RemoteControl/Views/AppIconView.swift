@@ -15,6 +15,7 @@ struct AppIconView: View {
     @State private var rotationAmplitude = Double.random(in: 3.0...4.5)
     @State private var translationAmplitude = Double.random(in: 0.8...1.5)
     @State private var speed = Double.random(in: 13...18)
+    @State private var isPressed = false
 
     private var cornerRadius: CGFloat { size * 0.22 }
     private var containerPadding: CGFloat { size * 0.01 }
@@ -27,6 +28,7 @@ struct AppIconView: View {
             }()
 
             iconContent
+                .scaleEffect(isPressed && !isEditing ? 0.88 : 1.0)
                 .rotationEffect(.degrees(isEditing ? sin(t * speed + rotationPhase) * rotationAmplitude : 0))
                 .offset(
                     x: isEditing ? cos(t * speed * 0.9 + translationPhase) * translationAmplitude : 0,
@@ -41,12 +43,18 @@ struct AppIconView: View {
         .onChange(of: isEditing) { editing in
             jiggleStart = editing ? Date() : nil
         }
+        .animation(.spring(response: 0.25, dampingFraction: 0.6), value: isPressed)
         .contentShape(Rectangle())
         .onTapGesture {
             if isEditing { return }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             onTap()
         }
-        .onLongPressGesture(minimumDuration: 0.5) {
+        .onLongPressGesture(minimumDuration: 0.5, pressing: { pressing in
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) {
+                isPressed = pressing
+            }
+        }) {
             onLongPress?()
         }
         .alert("删除应用", isPresented: $showDeleteAlert) {
@@ -95,19 +103,25 @@ struct AppIconView: View {
                         )
                 )
                 .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
+                .overlay(
+                    RoundedRectangle(cornerRadius: cornerRadius + containerPadding * 0.6, style: .continuous)
+                        .fill(.white.opacity(isPressed && !isEditing ? 0.12 : 0))
+                        .allowsHitTesting(false)
+                )
+                .shadow(color: .white.opacity(isPressed && !isEditing ? 0.25 : 0), radius: 12)
 
                 if isEditing {
                     Button {
                         showDeleteAlert = true
                     } label: {
                         Image(systemName: "xmark")
-                            .font(.system(size: 9, weight: .bold))
+                            .font(.system(size: 12, weight: .bold))
                             .foregroundStyle(.white)
-                            .frame(width: 20, height: 20)
+                            .frame(width: 26, height: 26)
                             .background(Circle().fill(.gray.opacity(0.7)))
                     }
                     .buttonStyle(.plain)
-                    .offset(x: -4, y: -4)
+                    .offset(x: -6, y: -6)
                     .transition(.scale.combined(with: .opacity))
                 }
             }
